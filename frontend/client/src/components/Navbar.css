@@ -1,0 +1,28 @@
+.navbar {
+  background: #333;
+  padding: 10px;
+  color: white;
+}
+
+.nav-link {
+  color: white;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #ccc;
+}
+
+.nav-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background: #c82333;
+}
