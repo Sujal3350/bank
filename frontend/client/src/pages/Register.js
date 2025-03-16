@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Register.css';
 
 const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -16,30 +17,30 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '20px auto' }}>
-      <h2>Register</h2>
+    <form onSubmit={handleSubmit} className="form-container">
+      <h2 className="form-title">Register</h2>
       <input
         type="text"
         placeholder="Name"
         value={form.name}
         onChange={(e) => setForm({ ...form, name: e.target.value })}
-        style={{ display: 'block', margin: '10px 0', padding: '8px', width: '100%' }}
+        className="form-input"
       />
       <input
         type="email"
         placeholder="Email"
         value={form.email}
         onChange={(e) => setForm({ ...form, email: e.target.value })}
-        style={{ display: 'block', margin: '10px 0', padding: '8px', width: '100%' }}
+        className="form-input"
       />
       <input
         type="password"
         placeholder="Password"
         value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })}
-        style={{ display: 'block', margin: '10px 0', padding: '8px', width: '100%' }}
+        className="form-input"
       />
-      <button type="submit" style={{ padding: '10px', width: '100%', background: '#007bff', color: 'white', border: 'none' }}>
+      <button type="submit" className="form-button">
         Register
       </button>
     </form>

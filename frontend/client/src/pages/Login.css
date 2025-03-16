@@ -1,46 +1,135 @@
 .form-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 40px auto; /* Increased top margin for better positioning */
+  padding: 25px; /* More padding for a spacious feel */
+  border: none; /* Removed border for a cleaner look */
+  border-radius: 10px; /* Slightly larger radius */
+  background: linear-gradient(135deg, #ffffff, #f0f4f8); /* Subtle gradient */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 0 40px rgba(0, 123, 255, 0.05); /* Layered shadow with a blue tint */
+  position: relative; /* For pseudo-elements */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
+}
+
+.form-container:hover {
+  transform: translateY(-3px); /* Slight lift effect */
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1), 0 0 50px rgba(0, 123, 255, 0.1); /* Enhanced shadow */
+}
+
+.form-container::before {
+  content: '✨'; /* Unique decorative element */
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-size: 24px;
+  color: #007bff; /* Blue sparkle */
+  animation: float 2s infinite ease-in-out; /* Floating animation */
+}
+
+.form-title {
+  margin-bottom: 25px;
+  font-size: 26px; /* Slightly larger for emphasis */
+  text-align: center;
+  color: #2d3748; /* Dark slate for professionalism */
+  font-weight: 600;
+  position: relative;
+}
+
+.form-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(to right, #007bff, #00d4ff); /* Gradient underline */
+  border-radius: 1px;
+  transition: width 0.3s ease; /* Animate width */
+}
+
+.form-title:hover::after {
+  width: 60px; /* Expands on hover */
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px; /* Increased padding */
+  margin-bottom: 15px; /* More spacing */
+  border: 1px solid #e2e8f0; /* Softer gray */
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 16px;
+  background: #fafafa; /* Light off-white */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4299e1; /* Soft blue focus */
+  box-shadow: 0 0 6px rgba(66, 153, 225, 0.4); /* Subtle glow */
+  transform: scale(1.01); /* Slight scale-up */
+}
+
+.form-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #007bff, #4dabf7); /* Gradient blue */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden; /* For ripple effect */
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.form-button:hover {
+  background: linear-gradient(to right, #0056b3, #4299e1); /* Darker gradient */
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); /* Blue glow */
+}
+
+.form-button::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(255, 255, 255, 0.2); /* Ripple effect */
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+}
+
+.form-button:active::after {
+  transform: translate(-50%, -50%) scale(1); /* Ripple expands on click */
+  transition: transform 0s; /* Instant start */
+}
+
+.form-note {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: center;
+  color: #718096; /* Softer gray */
+  line-height: 1.5;
+  position: relative;
+}
+
+.form-note::before {
+  content: 'ℹ️'; /* Info icon */
+  margin-right: 5px;
+  color: #4299e1; /* Blue accent */
+}
+
+/* Floating animation for the sparkle */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  .form-title {
-    margin-bottom: 20px;
-    font-size: 24px;
-    text-align: center;
+  50% {
+    transform: translateY(-5px);
   }
-  
-  .form-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-  
-  .form-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .form-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .form-note {
-    margin-top: 10px;
-    font-size: 14px;
-    text-align: center;
-    color: #666;
-  }
+}

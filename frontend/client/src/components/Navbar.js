@@ -1,34 +1,28 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Add useNavigate for redirection
+import { Link, useNavigate } from 'react-router-dom';
+import './Navbar.css';
 
 const Navbar = () => {
-  const navigate = useNavigate(); // For redirecting after logout
-  const isLoggedIn = !!localStorage.getItem('token'); // Check if token exists
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('token');
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token
-    navigate('/login'); // Redirect to login page
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
-    <nav style={{ background: '#333', padding: '10px', color: 'white' }}>
-      <Link to="/" style={{ color: 'white', margin: '0 10px' }}>Home</Link>
+    <nav className="navbar">
+      <Link to="/" className="nav-link">Home</Link>
       {!isLoggedIn ? (
         <>
-          <Link to="/login" style={{ color: 'white', margin: '0 10px' }}>Login</Link>
-          <Link to="/register" style={{ color: 'white', margin: '0 10px' }}>Register</Link>
+          <Link to="/login" className="nav-link">Login</Link>
+          <Link to="/register" className="nav-link">Register</Link>
         </>
       ) : (
         <button
           onClick={handleLogout}
-          style={{
-            background: '#dc3545', // Red color for logout
-            color: 'white',
-            border: 'none',
-            padding: '5px 10px',
-            margin: '0 10px',
-            cursor: 'pointer',
-          }}
+          className="nav-button"
         >
           Logout
         </button>

@@ -1,28 +1,70 @@
 .navbar {
-  background: #333;
-  padding: 10px;
+  background: linear-gradient(90deg, #1e2a38, #2c3e50); /* Deeper gradient for a premium look */
+  padding: 18px 25px; /* Increased padding for better spacing */
   color: white;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25); /* Enhanced shadow for depth */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Subtle border for definition */
 }
 
 .nav-link {
-  color: white;
-  margin-right: 10px;
+  color: #ecf0f1;
+  margin-right: 24px;
   text-decoration: none;
+  font-size: 17px; /* Slightly larger for readability */
+  font-weight: 600;
+  position: relative;
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding-bottom: 5px; /* Space for underline */
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, #3498db, #9b59b6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #ccc;
+  color: #d1d8e0; /* Softer hover effect */
+  transform: translateY(-3px); /* More pronounced lift effect */
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 
 .nav-button {
-  background: #dc3545;
+  background: linear-gradient(45deg, #e74c3c, #ff6b6b); /* More vibrant red gradient */
   color: white;
   border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  padding: 10px 18px; /* Increased padding for better click area */
+  border-radius: 8px; /* More rounded corners for modern feel */
   cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.35);
 }
 
 .nav-button:hover {
-  background: #c82333;
+  background: linear-gradient(45deg, #c82333, #d63031);
+  transform: scale(1.07); /* Stronger scale-up effect */
+  box-shadow: 0 5px 20px rgba(220, 53, 69, 0.5);
+}
+
+.nav-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }

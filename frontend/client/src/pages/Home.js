@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Home.css';
 
 const Home = () => {
   const [account, setAccount] = useState({});
@@ -69,18 +70,18 @@ const Home = () => {
   const applyATM = async () => {
     const token = localStorage.getItem('token');
     const config = { headers: { 'x-auth-token': token } };
-    await axios.post('http://localhost:5000/api/atm/apply',{}, config);
+    await axios.post('http://localhost:5000/api/atm/apply', {}, config);
     const res = await axios.get('http://localhost:5000/api/atm/status', config);
     setAtmStatus(res.data);
   };
 
   if (!isLoggedIn) {
     return (
-      <div style={{ maxWidth: '600px', margin: '20px auto' }}>
-        <h2>Please log in to access your banking dashboard</h2>
+      <div className="container">
+        <h2 className="title">Please log in to access your banking dashboard</h2>
         <button
           onClick={() => navigate('/login')}
-          style={{ padding: '10px', background: '#007bff', color: 'white', border: 'none' }}
+          className="button"
         >
           Go to Login
         </button>
@@ -89,51 +90,51 @@ const Home = () => {
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '20px auto' }}>
-      <h2>Banking Dashboard</h2>
+    <div className="container">
+      <h2 className="title">Banking Dashboard</h2>
 
       {/* Account Details */}
-      <h3>Account Details</h3>
+      <h3 className="subtitle">Account Details</h3>
       <p>Name: {account.name}</p>
       <p>Email: {account.email}</p>
       <p>Balance: ${account.balance}</p>
 
       {/* Transfer */}
-      <h3>Transfer Money</h3>
+      <h3 className="subtitle">Transfer Money</h3>
       <input
         type="number"
         placeholder="Amount"
         value={transferAmount}
         onChange={(e) => setTransferAmount(e.target.value)}
-        style={{ margin: '10px 0', padding: '8px' }}
+        className="input"
       />
       <input
         type="email"
         placeholder="Recipient Email"
         value={toEmail}
         onChange={(e) => setToEmail(e.target.value)}
-        style={{ margin: '10px 0', padding: '8px', width: '100%' }}
+        className="input"
       />
       <button
         onClick={transfer}
-        style={{ padding: '10px', width: '100%', background: '#007bff', color: 'white', border: 'none' }}
+        className="button"
       >
         Transfer
       </button>
 
       {/* Loan Application */}
-      <h3>Apply for Loan</h3>
+      <h3 className="subtitle">Apply for Loan</h3>
       <input
         type="number"
         placeholder="Loan Amount"
         value={loanAmount}
         onChange={(e) => setLoanAmount(e.target.value)}
-        style={{ margin: '10px 0', padding: '8px' }}
+        className="input"
         disabled={loanStatus.loanStatus !== 'none'}
       />
       <button
         onClick={applyLoan}
-        style={{ padding: '10px', margin: '5px', background: '#28a745', color: 'white', border: 'none' }}
+        className="button-green"
         disabled={loanStatus.loanStatus !== 'none'}
       >
         Apply for Loan
@@ -144,17 +145,17 @@ const Home = () => {
       {/* Loan Payment */}
       {loanStatus.loanStatus === 'approved' && (
         <>
-          <h3>Pay Loan</h3>
+          <h3 className="subtitle">Pay Loan</h3>
           <input
             type="number"
             placeholder="Payment Amount"
             value={paymentAmount}
             onChange={(e) => setPaymentAmount(e.target.value)}
-            style={{ margin: '10px 0', padding: '8px' }}
+            className="input"
           />
           <button
             onClick={payLoan}
-            style={{ padding: '10px', margin: '5px', background: '#dc3545', color: 'white', border: 'none' }}
+            className="button-red"
           >
             Pay Loan
           </button>
@@ -162,10 +163,10 @@ const Home = () => {
       )}
 
       {/* ATM Card Application */}
-      <h3>ATM Card Service</h3>
+      <h3 className="subtitle">ATM Card Service</h3>
       <button
         onClick={applyATM}
-        style={{ padding: '10px', margin: '5px', background: '#007bff', color: 'white', border: 'none' }}
+        className="button"
         disabled={atmStatus.atmCardStatus !== 'none'}
       >
         Apply for ATM Card
@@ -173,8 +174,8 @@ const Home = () => {
       <p>ATM Card Status: {atmStatus.atmCardStatus}</p>
 
       {/* Transactions */}
-      <h3>Transactions</h3>
-      <ul>
+      <h3 className="subtitle">Transactions</h3>
+      <ul className="list">
         {transactions.map((t) => (
           <li key={t._id}>
             {t.type} - ${t.amount} - {new Date(t.date).toLocaleDateString()}

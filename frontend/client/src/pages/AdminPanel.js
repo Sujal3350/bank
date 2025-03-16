@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './AdminPanel.css';
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
@@ -51,63 +52,63 @@ const AdminPanel = () => {
   if (!isLoggedIn) return null;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '20px auto' }}>
-      <h2>Admin Panel</h2>
+    <div className="admin-container">
+      <h2 className="admin-title">Admin Panel</h2>
 
       {/* User Management */}
-      <h3>All Users</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <h3 className="admin-subtitle">All Users</h3>
+      <table className="admin-table">
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Name</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Email</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Balance</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Loan Status</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>ATM Status</th>
+            <th className="admin-th">Name</th>
+            <th className="admin-th">Email</th>
+            <th className="admin-th">Balance</th>
+            <th className="admin-th">Loan Status</th>
+            <th className="admin-th">ATM Status</th>
           </tr>
         </thead>
         <tbody>
           {users.map(user => (
             <tr key={user._id}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.email}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>${user.balance}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.loanStatus}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{user.atmCardStatus}</td>
+              <td className="admin-td">{user.name}</td>
+              <td className="admin-td">{user.email}</td>
+              <td className="admin-td">${user.balance}</td>
+              <td className="admin-td">{user.loanStatus}</td>
+              <td className="admin-td">{user.atmCardStatus}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* Loan Requests */}
-      <h3>Loan Requests</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+      <h3 className="admin-subtitle">Loan Requests</h3>
+      <table className="admin-table">
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>User</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Amount</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
+            <th className="admin-th">User</th>
+            <th className="admin-th">Amount</th>
+            <th className="admin-th">Status</th>
+            <th className="admin-th">Actions</th>
           </tr>
         </thead>
         <tbody>
           {loans.map(loan => (
             <tr key={loan._id}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{loan.userId.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>${loan.amount}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{loan.status}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+              <td className="admin-td">{loan.userId.name}</td>
+              <td className="admin-td">${loan.amount}</td>
+              <td className="admin-td">{loan.status}</td>
+              <td className="admin-td">
                 {loan.status === 'pending' && (
                   <>
                     <button
                       onClick={() => handleLoanAction(loan._id, 'approved')}
-                      style={{ background: '#28a745', color: 'white', border: 'none', padding: '5px', margin: '0 5px' }}
+                      className="admin-button-green"
                     >
                       Accept
                     </button>
                     <button
                       onClick={() => handleLoanAction(loan._id, 'rejected')}
-                      style={{ background: '#dc3545', color: 'white', border: 'none', padding: '5px', margin: '0 5px' }}
+                      className="admin-button-red"
                     >
                       Reject
                     </button>
@@ -120,32 +121,32 @@ const AdminPanel = () => {
       </table>
 
       {/* ATM Card Requests */}
-      <h3>ATM Card Requests</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+      <h3 className="admin-subtitle">ATM Card Requests</h3>
+      <table className="admin-table">
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>User</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
+            <th className="admin-th">User</th>
+            <th className="admin-th">Status</th>
+            <th className="admin-th">Actions</th>
           </tr>
         </thead>
         <tbody>
           {atmCards.map(atm => (
             <tr key={atm._id}>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{atm.userId.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>{atm.status}</td>
-              <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+              <td className="admin-td">{atm.userId.name}</td>
+              <td className="admin-td">{atm.status}</td>
+              <td className="admin-td">
                 {atm.status === 'applied' && (
                   <>
                     <button
                       onClick={() => handleATMAction(atm._id, 'issued')}
-                      style={{ background: '#28a745', color: 'white', border: 'none', padding: '5px', margin: '0 5px' }}
+                      className="admin-button-green"
                     >
                       Accept
                     </button>
                     <button
                       onClick={() => handleATMAction(atm._id, 'rejected')}
-                      style={{ background: '#dc3545', color: 'white', border: 'none', padding: '5px', margin: '0 5px' }}
+                      className="admin-button-red"
                     >
                       Reject
                     </button>

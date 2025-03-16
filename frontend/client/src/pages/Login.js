@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -25,36 +26,29 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '20px auto' }}>
-      <h2>Login</h2>
+    <form onSubmit={handleSubmit} className="form-container">
+      <h2 className="form-title">Login</h2>
       <input
         type="email"
         placeholder="Email"
         value={form.email}
         onChange={(e) => setForm({ ...form, email: e.target.value })}
-        style={{ display: 'block', margin: '10px 0', padding: '8px', width: '100%' }}
+        className="form-input"
       />
       <input
         type="password"
         placeholder="Password"
         value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })}
-        style={{ display: 'block', margin: '10px 0', padding: '8px', width: '100%' }}
+        className="form-input"
       />
       <button
         type="submit"
-        style={{
-          padding: '10px',
-          width: '100%',
-          background: '#007bff',
-          color: 'white',
-          border: 'none',
-          cursor: 'pointer',
-        }}
+        className="form-button"
       >
         Login
       </button>
-      <p style={{ marginTop: '10px' }}>Admin login: admin@example.com / admin123</p>
+      {/* <p className="form-note">Admin login: admin@example.com / admin123</p> */}
     </form>
   );
 };

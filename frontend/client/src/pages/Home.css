@@ -1,65 +1,157 @@
+/* General Container Styling */
 .container {
   max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  margin: 50px auto;
+  padding: 35px;
+  background: linear-gradient(145deg, #ffffff, #eef2f7);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 14px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
+.container:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Title Styling */
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 22px;
+  color: #1e293b;
+  text-align: center;
+  position: relative;
+  letter-spacing: 1px;
 }
 
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, #007bff, #00c4cc);
+  border-radius: 2px;
+  animation: pulse 2s infinite;
+}
+
+/* Subtitle Styling */
 .subtitle {
-  font-size: 20px;
-  font-weight: 600;
-  margin-top: 16px;
-  margin-bottom: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 26px;
+  margin-bottom: 14px;
+  color: #374151;
+  position: relative;
 }
 
+.subtitle::before {
+  content: '★';
+  color: #ff4757;
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* Input Fields */
 .input {
   width: 100%;
-  margin-bottom: 8px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 17px;
+  background: #f8fafc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+  transform: scale(1.03);
+}
+
+/* Button Styling */
 .button {
   width: 100%;
-  padding: 10px;
-  background: #007bff;
+  padding: 14px;
+  background: linear-gradient(to right, #007bff, #4299e1);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .button:hover {
-  background: #0056b3;
+  background: linear-gradient(to right, #0056b3, #2b6cb0);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.5);
 }
 
+/* Green Button */
 .button-green {
-  background: #28a745;
+  background: linear-gradient(to right, #28a745, #48bb78);
 }
 
 .button-green:hover {
-  background: #218838;
+  background: linear-gradient(to right, #218838, #38a169);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.5);
 }
 
+/* Red Button */
 .button-red {
-  background: #dc3545;
+  background: linear-gradient(to right, #dc3545, #f56565);
 }
 
 .button-red:hover {
-  background: #c82333;
+  background: linear-gradient(to right, #c82333, #e53e3e);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.5);
 }
 
+/* List Styling */
 .list {
-  list-style-type: disc;
-  padding-left: 20px;
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.list li {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #374151;
+}
+
+.list li::before {
+  content: '➤';
+  position: absolute;
+  left: 0;
+  color: #2563eb;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.list li:hover::before {
+  transform: translateX(6px);
+}
+
+/* Keyframe for Title Underline Animation */
+@keyframes pulse {
+  0% {
+    transform: translateX(-50%) scaleX(1);
+  }
+  50% {
+    transform: translateX(-50%) scaleX(1.2);
+  }
+  100% {
+    transform: translateX(-50%) scaleX(1);
+  }
 }

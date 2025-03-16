@@ -1,36 +1,129 @@
 .form-container {
   max-width: 400px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  margin: 40px auto; /* Increased margin for better positioning */
+  padding: 25px; /* More padding for a spacious feel */
+  background: linear-gradient(120deg, #ffffff, #eef2f6); /* Subtle gradient */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), 0 0 30px rgba(0, 123, 255, 0.05); /* Layered shadow with blue tint */
+  border-radius: 10px; /* Larger radius for softness */
+  position: relative; /* For pseudo-elements */
+  overflow: hidden; /* For decorative effects */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
+}
+
+.form-container:hover {
+  transform: translateY(-4px); /* Slight lift on hover */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 0 40px rgba(0, 123, 255, 0.1); /* Enhanced shadow */
+}
+
+.form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #007bff, #00d4ff); /* Unique top gradient bar */
+  border-radius: 8px 8px 0 0; /* Matches container radius */
+  animation: slide 3s infinite ease-in-out; /* Sliding effect */
 }
 
 .form-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
+  font-size: 26px; /* Slightly larger for prominence */
+  font-weight: 700; /* Bolder for emphasis */
+  margin-bottom: 20px;
+  color: #2c3e50; /* Dark blue-gray for sophistication */
+  text-align: center;
+  position: relative;
+  z-index: 1; /* Above decorative elements */
+}
+
+.form-title::after {
+  content: '◇'; /* Unique diamond symbol */
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #007bff; /* Blue accent */
+  animation: bounce 1.5s infinite; /* Subtle bounce */
 }
 
 .form-input {
   width: 100%;
-  margin-bottom: 8px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin-bottom: 12px; /* More spacing */
+  padding: 10px; /* Slightly more padding */
+  border: 1px solid #e2e8f0; /* Softer gray border */
+  border-radius: 5px;
+  font-size: 16px;
+  background: #fafafa; /* Light off-white */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4299e1; /* Soft blue focus */
+  box-shadow: 0 0 6px rgba(66, 153, 225, 0.3); /* Subtle glow */
+  transform: scale(1.02); /* Slight scale-up */
 }
 
 .form-button {
   width: 100%;
-  padding: 10px;
-  background: #007bff;
+  padding: 12px; /* Increased padding */
+  background: linear-gradient(to right, #007bff, #4dabf7); /* Gradient blue */
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden; /* For ripple effect */
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .form-button:hover {
-  background: #0056b3;
+  background: linear-gradient(to right, #0056b3, #4299e1); /* Darker gradient */
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4); /* Blue glow */
+}
+
+.form-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3); /* Ripple effect */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.form-button:active::before {
+  width: 300px; /* Expands ripple on click */
+  height: 300px;
+}
+
+/* Animation for top gradient bar */
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Animation for diamond symbol */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
 }
