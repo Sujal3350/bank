@@ -12,6 +12,10 @@ const Home = () => {
   const [loanStatus, setLoanStatus] = useState({});
   const [paymentAmount, setPaymentAmount] = useState('');
   const [atmStatus, setAtmStatus] = useState({});
+  const [fixedDeposits, setFixedDeposits] = useState([]);
+  const [fdAmount, setFdAmount] = useState('');
+  const [fdInterestRate, setFdInterestRate] = useState('');
+  const [fdDuration, setFdDuration] = useState('');
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('token');
 
@@ -29,6 +33,8 @@ const Home = () => {
         setLoanStatus(loanRes.data);
         const atmRes = await axios.get('http://localhost:5000/api/atm/status', config);
         setAtmStatus(atmRes.data);
+        const fdRes = await axios.get('http://localhost:5000/api/fixed-deposits', config);
+        setFixedDeposits(fdRes.data);
       } catch (err) {
         console.error(err);
         if (err.response?.status === 401) {
@@ -73,6 +79,16 @@ const Home = () => {
     await axios.post('http://localhost:5000/api/atm/apply', {}, config);
     const res = await axios.get('http://localhost:5000/api/atm/status', config);
     setAtmStatus(res.data);
+  };
+
+  const applyFixedDeposit = async () => {
+    const token = localStorage.getItem('token');
+    const config = { headers: { 'x-auth-token': token } };
+    const res = await axios.post('http://localhost:5000/api/fixed-deposit/apply', { amount: Number(fdAmount), interestRate: Number(fdInterestRate), duration: Number(fdDuration) }, config);
+    setFixedDeposits([...fixedDeposits, res.data.fixedDeposit]);
+    setFdAmount('');
+    setFdInterestRate('');
+    setFdDuration('');
   };
 
   if (!isLoggedIn) {
@@ -172,6 +188,43 @@ const Home = () => {
         Apply for ATM Card
       </button>
       <p>ATM Card Status: {atmStatus.atmCardStatus}</p>
+
+      {/* Fixed Deposit Application */}
+      <h3 className="subtitle">Fixed Deposit</h3>
+      <input
+        type="number"
+        placeholder="Amount"
+        value={fdAmount}
+        onChange={(e) => setFdAmount(e.target.value)}
+        className="input"
+      />
+      <input
+        type="number"
+        placeholder="Interest Rate"
+        value={fdInterestRate}
+        onChange={(e) => setFdInterestRate(e.target.value)}
+        className="input"
+      />
+      <input
+        type="number"
+        placeholder="Duration (months)"
+        value={fdDuration}
+        onChange={(e) => setFdDuration(e.target.value)}
+        className="input"
+      />
+      <button
+        onClick={applyFixedDeposit}
+        className="button-green"
+      >
+        Apply for Fixed Deposit
+      </button>
+      <ul className="list">
+        {fixedDeposits.map((fd) => (
+          <li key={fd._id}>
+            Amount: ${fd.amount} - Interest Rate: {fd.interestRate}% - Duration: {fd.duration} months - Status: {fd.status}
+          </li>
+        ))}
+      </ul>
 
       {/* Transactions */}
       <h3 className="subtitle">Transactions</h3>

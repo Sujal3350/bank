@@ -6,6 +6,8 @@ const User = require('../models/User');
 const Transaction = require('../models/Transaction');
 const Loan = require('../models/Loan');
 const ATMCard = require('../models/ATMCard');
+const FixedDeposit = require('../models/FixedDeposit');
+const CreditCard = require('../models/CreditCard');
 
 // Hardcoded admin credentials (for simplicity; in production, store in DB)
 const ADMIN_EMAIL = 'admin@example.com';
@@ -171,6 +173,54 @@ router.get('/atm/status', auth, async (req, res) => {
   res.json({ atmCards, atmCardStatus: user.atmCardStatus });
 });
 
+// Apply for Fixed Deposit (User)
+router.post('/fixed-deposit/apply', auth, async (req, res) => {
+  const { amount, interestRate, duration } = req.body;
+  try {
+    const user = await User.findById(req.user);
+    const maturityDate = new Date();
+    maturityDate.setMonth(maturityDate.getMonth() + duration);
+
+    const fixedDeposit = new FixedDeposit({
+      userId: req.user,
+      amount,
+      interestRate,
+      duration,
+      maturityDate,
+    });
+
+    await fixedDeposit.save();
+    res.json({ msg: 'Fixed Deposit application submitted', fixedDeposit });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// Get Fixed Deposits (User)
+router.get('/fixed-deposits', auth, async (req, res) => {
+  const fixedDeposits = await FixedDeposit.find({ userId: req.user });
+  res.json(fixedDeposits);
+});
+
+// Apply for Credit Card (User)
+router.post('/credit-card/apply', auth, async (req, res) => {
+  const user = await User.findById(req.user);
+  if (user.creditCardStatus !== 'none') return res.status(400).json({ msg: 'You already have a credit card request' });
+
+  const creditCard = new CreditCard({ userId: req.user });
+  await creditCard.save();
+  user.creditCardStatus = 'applied';
+  await user.save();
+  res.json({ msg: 'Credit card application submitted' });
+});
+
+// Get Credit Card Status (User)
+router.get('/credit-card/status', auth, async (req, res) => {
+  const creditCards = await CreditCard.find({ userId: req.user });
+  const user = await User.findById(req.user);
+  res.json({ creditCards, creditCardStatus: user.creditCardStatus });
+});
+
 // Admin: Get All Users
 router.get('/admin/users', auth, adminAuth, async (req, res) => {
   const users = await User.find().select('-password');
@@ -227,6 +277,31 @@ router.post('/admin/atm/:id', auth, adminAuth, async (req, res) => {
     await atmCard.save();
     await user.save();
     res.json({ msg: `ATM card ${status}` });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// Admin: Get All Credit Card Requests
+router.get('/admin/credit-cards', auth, adminAuth, async (req, res) => {
+  const creditCards = await CreditCard.find().populate('userId', 'name email');
+  res.json(creditCards);
+});
+
+// Admin: Accept/Reject Credit Card Request
+router.post('/admin/credit-card/:id', auth, adminAuth, async (req, res) => {
+  const { status } = req.body; // 'approved' or 'rejected'
+  try {
+    const creditCard = await CreditCard.findById(req.params.id);
+    if (!creditCard || creditCard.status !== 'applied') return res.status(400).json({ msg: 'Invalid credit card request' });
+
+    const user = await User.findById(creditCard.userId);
+    creditCard.status = status;
+    user.creditCardStatus = status;
+    if (status === 'approved') creditCard.approvedDate = Date.now();
+    await creditCard.save();
+    await user.save();
+    res.json({ msg: `Credit card ${status}` });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
   }

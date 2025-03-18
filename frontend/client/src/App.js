@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPanel from './pages/AdminPanel'; // New import
+import CreditCard from './pages/CreditCard'; // New import
 import './styles/App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<AdminPanel />} /> {/* New route */}
+          <Route path="/credit-card" element={<CreditCard />} /> {/* New route */}
         </Routes>
       </div>
     </Router>

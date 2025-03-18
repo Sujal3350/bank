@@ -14,6 +14,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/" className="nav-link">Home</Link>
+      <Link to="/credit-card" className="nav-link">Credit Card</Link>
       {!isLoggedIn ? (
         <>
           <Link to="/login" className="nav-link">Login</Link>
