@@ -17,15 +17,21 @@ const ADMIN_PASSWORD = 'admin123'; // In production, hash this and store securel
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
   try {
+    if (!name || !email || !password) {
+      return res.status(400).json({ msg: 'Please provide all required fields' });
+    }
+
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: 'User already exists' });
 
-    user = new User({ name, email, password: await bcrypt.hash(password, 10) });
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Add token expiration
     res.json({ token });
   } catch (err) {
+    console.error(err.message);
     res.status(500).json({ msg: 'Server error' });
   }
 });
@@ -34,13 +40,24 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
+    if (!email || !password) {
+      return res.status(400).json({ msg: 'Please provide all required fields' });
+    }
+
     const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+    const isMatch = await bcrypt.compare(password, user.password); // Compare hashed password
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Add token expiration
     res.json({ token });
   } catch (err) {
+    console.error(err.message);
     res.status(500).json({ msg: 'Server error' });
   }
 });
@@ -204,21 +221,29 @@ router.get('/fixed-deposits', auth, async (req, res) => {
 
 // Apply for Credit Card (User)
 router.post('/credit-card/apply', auth, async (req, res) => {
-  const user = await User.findById(req.user);
-  if (user.creditCardStatus !== 'none') return res.status(400).json({ msg: 'You already have a credit card request' });
+  try {
+    const user = await User.findById(req.user);
+    if (user.creditCardStatus !== 'none') return res.status(400).json({ msg: 'You already have a credit card request' });
 
-  const creditCard = new CreditCard({ userId: req.user });
-  await creditCard.save();
-  user.creditCardStatus = 'applied';
-  await user.save();
-  res.json({ msg: 'Credit card application submitted' });
+    const creditCard = new CreditCard({ userId: req.user });
+    await creditCard.save();
+    user.creditCardStatus = 'applied';
+    await user.save();
+    res.json({ msg: 'Credit card application submitted' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
 });
 
 // Get Credit Card Status (User)
 router.get('/credit-card/status', auth, async (req, res) => {
-  const creditCards = await CreditCard.find({ userId: req.user });
-  const user = await User.findById(req.user);
-  res.json({ creditCards, creditCardStatus: user.creditCardStatus });
+  try {
+    const creditCard = await CreditCard.findOne({ userId: req.user });
+    const user = await User.findById(req.user);
+    res.json({ creditCard, creditCardStatus: user.creditCardStatus });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
 });
 
 // Admin: Get All Users
@@ -293,7 +318,9 @@ router.post('/admin/credit-card/:id', auth, adminAuth, async (req, res) => {
   const { status } = req.body; // 'approved' or 'rejected'
   try {
     const creditCard = await CreditCard.findById(req.params.id);
-    if (!creditCard || creditCard.status !== 'applied') return res.status(400).json({ msg: 'Invalid credit card request' });
+    if (!creditCard || creditCard.status !== 'applied') {
+      return res.status(400).json({ msg: 'Invalid credit card request' });
+    }
 
     const user = await User.findById(creditCard.userId);
     creditCard.status = status;

@@ -7,6 +7,7 @@ const AdminPanel = () => {
   const [users, setUsers] = useState([]);
   const [loans, setLoans] = useState([]);
   const [atmCards, setAtmCards] = useState([]);
+  const [creditCards, setCreditCards] = useState([]); // Add state for credit card requests
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('token');
 
@@ -25,6 +26,8 @@ const AdminPanel = () => {
         setLoans(loansRes.data);
         const atmRes = await axios.get('http://localhost:5000/api/admin/atm', config);
         setAtmCards(atmRes.data);
+        const creditCardRes = await axios.get('http://localhost:5000/api/admin/credit-cards', config);
+        setCreditCards(creditCardRes.data);
       } catch (err) {
         if (err.response?.status === 403 || err.response?.status === 401) {
           localStorage.removeItem('token');
@@ -47,6 +50,13 @@ const AdminPanel = () => {
     const config = { headers: { 'x-auth-token': token } };
     await axios.post(`http://localhost:5000/api/admin/atm/${atmId}`, { status }, config);
     setAtmCards(atmCards.map(atm => atm._id === atmId ? { ...atm, status } : atm));
+  };
+
+  const handleCreditCardAction = async (creditCardId, status) => {
+    const token = localStorage.getItem('token');
+    const config = { headers: { 'x-auth-token': token } };
+    await axios.post(`http://localhost:5000/api/admin/credit-card/${creditCardId}`, { status }, config);
+    setCreditCards(creditCards.map(card => card._id === creditCardId ? { ...card, status } : card));
   };
 
   if (!isLoggedIn) return null;
@@ -146,6 +156,44 @@ const AdminPanel = () => {
                     </button>
                     <button
                       onClick={() => handleATMAction(atm._id, 'rejected')}
+                      className="admin-button-red"
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Credit Card Requests */}
+      <h3 className="admin-subtitle">Credit Card Requests</h3>
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th className="admin-th">User</th>
+            <th className="admin-th">Status</th>
+            <th className="admin-th">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {creditCards.map(card => (
+            <tr key={card._id}>
+              <td className="admin-td">{card.userId.name}</td>
+              <td className="admin-td">{card.status}</td>
+              <td className="admin-td">
+                {card.status === 'applied' && (
+                  <>
+                    <button
+                      onClick={() => handleCreditCardAction(card._id, 'approved')}
+                      className="admin-button-green"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleCreditCardAction(card._id, 'rejected')}
                       className="admin-button-red"
                     >
                       Reject

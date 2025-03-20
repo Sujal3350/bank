@@ -18,8 +18,8 @@ const CreditCard = () => {
       }
       const config = { headers: { 'x-auth-token': token } };
       try {
-        const res = await axios.get('http://localhost:5000/api/credit-card/status', config);
-        setCreditCardStatus(res.data.creditCardStatus);
+        const res = await axios.get('http://localhost:5000/api/credit-card/status', config); // Ensure this URL is correct
+        setCreditCardStatus(res.data.creditCardStatus || 'none');
       } catch (err) {
         if (err.response?.status === 401) {
           localStorage.removeItem('token');
