@@ -248,14 +248,24 @@ router.get('/credit-card/status', auth, async (req, res) => {
 
 // Admin: Get All Users
 router.get('/admin/users', auth, adminAuth, async (req, res) => {
-  const users = await User.find().select('-password');
-  res.json(users);
+  try {
+    const users = await User.find().select('-password'); // Ensure no sensitive data is returned
+    res.json(users);
+  } catch (err) {
+    console.error('Error fetching users:', err.message);
+    res.status(500).json({ msg: 'Failed to fetch users' });
+  }
 });
 
 // Admin: Get All Loan Requests
 router.get('/admin/loans', auth, adminAuth, async (req, res) => {
-  const loans = await Loan.find().populate('userId', 'name email');
-  res.json(loans);
+  try {
+    const loans = await Loan.find().populate('userId', 'name email'); // Populate user details
+    res.json(loans);
+  } catch (err) {
+    console.error('Error fetching loans:', err.message);
+    res.status(500).json({ msg: 'Failed to fetch loans' });
+  }
 });
 
 // Admin: Accept/Reject Loan Request
@@ -284,8 +294,13 @@ router.post('/admin/loan/:id', auth, adminAuth, async (req, res) => {
 
 // Admin: Get All ATM Card Requests
 router.get('/admin/atm', auth, adminAuth, async (req, res) => {
-  const atmCards = await ATMCard.find().populate('userId', 'name email');
-  res.json(atmCards);
+  try {
+    const atmCards = await ATMCard.find().populate('userId', 'name email'); // Populate user details
+    res.json(atmCards);
+  } catch (err) {
+    console.error('Error fetching ATM card requests:', err.message);
+    res.status(500).json({ msg: 'Failed to fetch ATM card requests' });
+  }
 });
 
 // Admin: Accept/Reject ATM Card Request
@@ -309,8 +324,13 @@ router.post('/admin/atm/:id', auth, adminAuth, async (req, res) => {
 
 // Admin: Get All Credit Card Requests
 router.get('/admin/credit-cards', auth, adminAuth, async (req, res) => {
-  const creditCards = await CreditCard.find().populate('userId', 'name email');
-  res.json(creditCards);
+  try {
+    const creditCards = await CreditCard.find().populate('userId', 'name email'); // Populate user details
+    res.json(creditCards);
+  } catch (err) {
+    console.error('Error fetching credit card requests:', err.message);
+    res.status(500).json({ msg: 'Failed to fetch credit card requests' });
+  }
 });
 
 // Admin: Accept/Reject Credit Card Request
@@ -331,6 +351,81 @@ router.post('/admin/credit-card/:id', auth, adminAuth, async (req, res) => {
     res.json({ msg: `Credit card ${status}` });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// Generate Account Report (Admin)
+router.get('/account/report/:id', auth, adminAuth, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      console.error('User ID is missing in the request');
+      return res.status(400).json({ msg: 'User ID is required' });
+    }
+
+    // Fetch user details
+    const user = await User.findById(userId).select('-password');
+    if (!user) {
+      console.error(`User with ID ${userId} not found`);
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Fetch transactions
+    const transactions = await Transaction.find({ userId }).lean();
+
+    // Fetch loans
+    const loans = await Loan.find({ userId }).lean();
+
+    // Fetch fixed deposits
+    const fixedDeposits = await FixedDeposit.find({ userId }).lean();
+
+    // Fetch ATM card details
+    const atmCards = await ATMCard.find({ userId }).lean();
+
+    // Fetch credit card details
+    const creditCards = await CreditCard.find({ userId }).lean();
+
+    // Construct the report
+    const report = {
+      user: {
+        name: user.name,
+        email: user.email,
+        balance: user.balance,
+        loanStatus: user.loanStatus,
+        atmCardStatus: user.atmCardStatus,
+        creditCardStatus: user.creditCardStatus,
+      },
+      transactions: transactions.map(t => ({
+        type: t.type,
+        amount: t.amount,
+        date: t.date ? t.date.toISOString() : null,
+        toUserId: t.toUserId,
+      })),
+      loans: loans.map(l => ({
+        amount: l.amount,
+        status: l.status,
+        date: l.date ? l.date.toISOString() : null,
+      })),
+      fixedDeposits: fixedDeposits.map(fd => ({
+        amount: fd.amount,
+        interestRate: fd.interestRate,
+        duration: fd.duration,
+        maturityDate: fd.maturityDate ? fd.maturityDate.toISOString() : null,
+      })),
+      atmCards: atmCards.map(atm => ({
+        status: atm.status,
+        issuedDate: atm.issuedDate ? atm.issuedDate.toISOString() : null,
+      })),
+      creditCards: creditCards.map(cc => ({
+        status: cc.status,
+        approvedDate: cc.approvedDate ? cc.approvedDate.toISOString() : null,
+      })),
+    };
+
+    res.status(200).json(report);
+  } catch (err) {
+    console.error('Error generating report:', err.message);
+    res.status(500).json({ msg: 'Failed to generate report' });
   }
 });
 

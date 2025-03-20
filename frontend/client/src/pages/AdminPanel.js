@@ -22,17 +22,18 @@ const AdminPanel = () => {
       try {
         const usersRes = await axios.get('http://localhost:5000/api/admin/users', config);
         setUsers(usersRes.data);
+
         const loansRes = await axios.get('http://localhost:5000/api/admin/loans', config);
         setLoans(loansRes.data);
+
         const atmRes = await axios.get('http://localhost:5000/api/admin/atm', config);
         setAtmCards(atmRes.data);
+
         const creditCardRes = await axios.get('http://localhost:5000/api/admin/credit-cards', config);
         setCreditCards(creditCardRes.data);
       } catch (err) {
-        if (err.response?.status === 403 || err.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/login');
-        }
+        console.error('Error fetching admin data:', err.response?.data?.msg || err.message);
+        alert(`Failed to fetch admin data: ${err.response?.data?.msg || 'Unknown error'}`);
       }
     };
     fetchData();
@@ -59,6 +60,32 @@ const AdminPanel = () => {
     setCreditCards(creditCards.map(card => card._id === creditCardId ? { ...card, status } : card));
   };
 
+  const generateReport = async (userId) => {
+    const token = localStorage.getItem('token');
+    const config = { headers: { 'x-auth-token': token } };
+
+    try {
+      const res = await axios.get(`http://localhost:5000/api/account/report/${userId}`, config);
+      const reportData = res.data;
+
+      // Convert the report data to a JSON string
+      const reportBlob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+      const reportUrl = URL.createObjectURL(reportBlob);
+
+      // Create a link to download the report
+      const link = document.createElement('a');
+      link.href = reportUrl;
+      link.download = `user_report_${userId}.json`;
+      link.click();
+
+      // Clean up the URL object
+      URL.revokeObjectURL(reportUrl);
+    } catch (err) {
+      console.error('Failed to generate report:', err.response?.data?.msg || err.message);
+      alert(`Failed to generate report: ${err.response?.data?.msg || 'Unknown error'}`);
+    }
+  };
+
   if (!isLoggedIn) return null;
 
   return (
@@ -75,6 +102,7 @@ const AdminPanel = () => {
             <th className="admin-th">Balance</th>
             <th className="admin-th">Loan Status</th>
             <th className="admin-th">ATM Status</th>
+            <th className="admin-th">Actions</th> {/* Add Actions column */}
           </tr>
         </thead>
         <tbody>
@@ -85,6 +113,14 @@ const AdminPanel = () => {
               <td className="admin-td">${user.balance}</td>
               <td className="admin-td">{user.loanStatus}</td>
               <td className="admin-td">{user.atmCardStatus}</td>
+              <td className="admin-td">
+                <button
+                  onClick={() => generateReport(user._id)}
+                  className="admin-button"
+                >
+                  Generate Report
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
